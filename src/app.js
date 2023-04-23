@@ -9,4 +9,4 @@ app.use(router)
 
 const PORT = 5000
 
-app.listen(PORT, console.log(`Listening on port ${PORT}`))
+app.listen(PORT, console.log(`Server running in port :${PORT}`))
