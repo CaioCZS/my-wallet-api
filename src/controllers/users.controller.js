@@ -2,7 +2,7 @@ import { db } from "../database/database.connection.js"
 import bcrypt, { compareSync } from "bcrypt"
 import { v4 as uuid } from "uuid"
 import { shemaLogin, userSchema } from "../schemas/user.schema.js"
-import joi from "joi"
+
 export async function singup(req, res) {
   const { email, username, password } = req.body
 

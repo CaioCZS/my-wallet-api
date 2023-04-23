@@ -1,5 +1,4 @@
 import { db } from "../database/database.connection.js"
-import { ObjectId } from "mongodb"
 import { transactionSchema } from "../schemas/transaction.schema.js"
 export async function postTransaction(req, res) {
   const { type } = req.params
@@ -24,6 +23,25 @@ export async function postTransaction(req, res) {
       .insertOne({ ...transactionBody, userID: session.userID })
 
     res.sendStatus(201)
+  } catch (err) {
+    res.status(500).send(err.message)
+  }
+}
+
+export async function getTransactions(req, res) {
+  const { authorization } = req.headers
+  const token = authorization?.replace("Bearer ", "")
+  if (!token) return res.sendStatus(401)
+
+  try {
+    const session = await db.collection("sessions").findOne({ token })
+
+    const transactions = await db
+      .collection("transactions")
+      .find({ userID: session.userID })
+      .toArray()
+
+    res.send(transactions)
   } catch (err) {
     res.status(500).send(err.message)
   }
