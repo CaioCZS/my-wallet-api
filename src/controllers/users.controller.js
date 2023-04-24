@@ -43,7 +43,7 @@ export async function singin(req, res) {
 
     const token = uuid()
     await db.collection("sessions").insertOne({ token, userID: user._id })
-    res.send(token)
+    res.send({ token, name: user.username })
   } catch (err) {
     res.status(500).send(err.message)
   }
