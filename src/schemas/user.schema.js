@@ -6,7 +6,7 @@ export const userSchema = joi.object({
   email: joi.string().email().required(),
 })
 
-export const shemaLogin = joi.object({
+export const schemaLogin = joi.object({
   email: joi.string().email().required(),
   password: joi.string().min(3).required(),
 })

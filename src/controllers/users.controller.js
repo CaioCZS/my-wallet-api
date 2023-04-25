@@ -1,17 +1,8 @@
 import { db } from "../database/database.connection.js"
 import bcrypt, { compareSync } from "bcrypt"
 import { v4 as uuid } from "uuid"
-import { shemaLogin, userSchema } from "../schemas/user.schema.js"
-
 export async function singup(req, res) {
   const { email, username, password } = req.body
-
-  const validation = userSchema.validate(req.body, { abortEarly: false })
-  if (validation.error) {
-    const errors = validation.error.details.map((detail) => detail.message)
-    return res.status(422).send(errors)
-  }
-
   try {
     const userExist = await db.collection("users").findOne({ email })
     if (userExist) return res.status(409).send("E-mail já cadastrado")
@@ -27,13 +18,6 @@ export async function singup(req, res) {
 
 export async function singin(req, res) {
   const { email, password } = req.body
-
-  const validation = shemaLogin.validate(req.body, { abortEarly: false })
-  if (validation.error) {
-    const errors = validation.error.details.map((detail) => detail.message)
-    return res.status(422).send(errors)
-  }
-
   try {
     const user = await db.collection("users").findOne({ email })
     if (!user) return res.status(404).send("E-mail não cadastrado")
