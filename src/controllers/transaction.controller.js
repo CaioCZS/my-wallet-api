@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { db } from "../database/database.connection.js"
 import { transactionSchema } from "../schemas/transaction.schema.js"
 export async function postTransaction(req, res) {
@@ -18,9 +19,11 @@ export async function postTransaction(req, res) {
     const session = await db.collection("sessions").findOne({ token })
     if (!session) return res.status(401).send("Sessão expirada")
 
-    await db
-      .collection("transactions")
-      .insertOne({ ...transactionBody, userID: session.userID })
+    await db.collection("transactions").insertOne({
+      ...transactionBody,
+      userID: session.userID,
+      time: Date.now(),
+    })
 
     res.sendStatus(201)
   } catch (err) {
@@ -41,7 +44,9 @@ export async function getTransactions(req, res) {
       .find({ userID: session.userID })
       .toArray()
 
-    res.send(transactions)
+    res.send(
+      transactions.map((t) => ({ ...t, time: dayjs(t.time).format("DD/MM") }))
+    )
   } catch (err) {
     res.status(500).send(err.message)
   }
